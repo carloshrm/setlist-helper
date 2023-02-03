@@ -14,10 +14,8 @@ async function getSongs() {
 export default async function Home() {
   const songData: (typeof Song)[] = await getSongs();
   return (
-    <main>
-      <div>
-        <Metronome presetRate={120} />
-      </div>
+    <main className='flex justify-center align-middle bg-emerald-100'>
+      <Metronome presetRate={120} />
       <Song title={'abcd'} bpm={20} />
     </main>
   );
