@@ -1,4 +1,5 @@
 'use client';
+import { log } from 'console';
 import React, { ChangeEvent, useEffect, useState, type ReactElement } from 'react';
 import styles from "./Metronome.module.css";
 
@@ -38,11 +39,18 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
     const [rate, setRate] = useState(0);
     const [intervalID, setIntervalID] = useState(-1);
 
+    let highClick = document.getElementById("high_click") as HTMLAudioElement;
+    let lowClick = document.getElementById("low_click") as HTMLAudioElement;
+
     useEffect(() => {
         setTempo(prop.presetRate.toString());
         setTimeSig(prop.presetMeter ?? meter);
     }, []);
 
+    useEffect(() => {
+        if (intervalID != -1)
+            startClicking();
+    }, [rate]);
 
     function stopClicking(): void {
         if (intervalID != -1) {
@@ -64,7 +72,8 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
     function tick(): void {
         setTickCount((t) => t + 1);
         let display = document.getElementById("tempodisplay");
-        display?.classList.toggle("bg-black");
+        display?.classList.toggle("bg-emerald-900");
+        highClick.play();
     }
 
     function setTempo(val: string): void {
@@ -79,8 +88,6 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
             range.value = val;
 
         setRate(parseInt(val));
-        if (intervalID != -1)
-            startClicking();
     }
 
     function setTimeSig(m: Meter): void {
@@ -103,22 +110,22 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
     }
 
     return (
-        <div className='flex flex-col'>
-            <p>Choose your tempo: {rate}</p>
-            <p>Time: {makeTimeString()}</p>
-            <div>
-                <input type="range" min={40} max={220} className={styles.slider} id="tslider" name="tslider" onChange={(e) => setTempo(e.target.value)} />
-            </div>
-            <select id="tlist" className={styles.slider_list} onChange={(e) => { setTempo(e.target.value); }}>
-                {Object.entries(Tempo).map(([k, v]) => <option key={v} value={k} label={v + " :: " + k}></option>)}
-            </select>
-            <div>
-                <select name="meterbeats" id="meterbeats" onChange={(e) => setMeter((p) => {
+        <div className='flex flex-col w-2/3 px-8 py-4 bg-stone-800'>
+            <h1 className='text-4xl mb-4'>Metronome</h1>
+            <p><span className='font-bold'>{rate}</span> BPM</p>
+            <p>{makeTimeString()}</p>
+            <input type="range" min={40} max={220} className="range accent-emerald-500 my-4" id="tslider" name="tslider" onChange={(e) => setTempo(e.target.value)} />
+
+            <div className='flex justify-center my-4'>
+                <select id="tlist" className={"bg-stone-900 p-2"} onChange={(e) => { setTempo(e.target.value); }}>
+                    {Object.entries(Tempo).map(([k, v]) => <option key={v} value={k} label={v + " :: " + k}></option>)}
+                </select>
+                <select className='bg-stone-900 mx-4 w-20 text-center' name="meterbeats" id="meterbeats" onChange={(e) => setMeter((p) => {
                     return { beats: parseInt(e.target.value), measure: p.measure };
                 })}>
                     {[...Array(21)].map((v, i) => <option key={i} value={i + 1} label={(i + 1).toString()}></option>)}
                 </select>
-                <select name="metermeasure" id="metermeasure" onChange={(e) => setMeter((p) => {
+                <select className='bg-stone-900 mx-4 w-20 text-center' name="metermeasure" id="metermeasure" onChange={(e) => setMeter((p) => {
                     return { beats: p.beats, measure: parseInt(e.target.value) };
                 })}>
                     <option value="2" label='2'>2</option>
@@ -126,13 +133,19 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
                     <option value="8" label='8'>8</option>
                 </select>
             </div>
-            <div className='p-6 bg-slate-200' id='tempodisplay'>
-                <p>{(tickCount % meter.beats) + 1}</p>
+            <div className='p-4  bg-stone-900 bg-emerald-900 my-6' id='tempodisplay'>
+                <h1 className='text-6xl text-center font-bold'>{(tickCount % meter.beats) + 1}</h1>
             </div>
             <div className='flex justify-center'>
-                <button onClick={startClicking} className="px-8 py-2 mx-2 bg-lime-400 rounded-full font-bold">start</button>
-                <button onClick={stopClicking} className="px-8 py-2 mx-2 bg-lime-400 rounded-full font-bold">stop</button>
+                <button onClick={startClicking} className="px-8 py-2 mx-2 bg-emerald-600 rounded-full font-bold">start</button>
+                <button onClick={stopClicking} className="px-8 py-2 mx-2 bg-emerald-600 rounded-full font-bold">stop</button>
             </div>
+            <input className="" type="range" name="volume" id="volume" min={0} max={1} step={0.1} onChange={(e) => {
+                highClick.volume = e.target.valueAsNumber;
+                lowClick.volume = e.target.valueAsNumber;
+            }} />
+            <audio hidden src="/sounds/high_click.wav" id='high_click'></audio>
+            <audio hidden src="/sounds/low_click.wav" id='low_click'></audio>
         </div>
     );
 }

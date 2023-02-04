@@ -2,28 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap');
-
-:root {}
-
 * {
   box-sizing: border-box;
-  font-family: 'Quicksand', sans-serif;
   padding: 0;
   margin: 0;
-}
-
-html,
-body {
-  max-width: 100vw;
-  max-height: 100vh;
+  color: white;
+  font-size: 16pt;
 }
 
 a {
   text-decoration: none;
-}
-
-input[type="range"][orient="vertical"] {
-  writing-mode: bt-lr;
-  appearance: slider-vertical;
 }
