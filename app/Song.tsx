@@ -1,15 +1,25 @@
 import React, { type ReactElement } from 'react';
 
-interface SongProperties {
+export const limits = { minBPM: 40, maxBPM: 220 };
+
+export interface ISong {
+  id: number;
   title: string;
+  comments: string;
   bpm: number;
+  date: Date;
 }
 
-function Song({ title, bpm }: SongProperties): ReactElement {
+interface SongProps {
+  song: ISong;
+}
+
+function Song({ song }: SongProps): ReactElement {
+
   return (
     <div>
-      <p>Title: {title}</p>
-      <p>bpm: {bpm}</p>
+      <p>Title: {song.title} BPM: {song.bpm} Date Added: {song.date.toLocaleDateString()}</p>
+      <p>Comments: {song.comments}</p>
     </div>
   );
 }
