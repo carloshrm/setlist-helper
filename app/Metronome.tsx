@@ -1,7 +1,6 @@
 'use client';
-import { log } from 'console';
-import React, { ChangeEvent, useEffect, useState, type ReactElement } from 'react';
-import styles from "./Metronome.module.css";
+import React, { useEffect, useState, type ReactElement } from 'react';
+import { limits } from './Song';
 
 const Tempo: { [key: number]: string; } = {
     40: "Grave",
@@ -26,7 +25,6 @@ interface Meter {
     beats: number,
     measure: number;
 }
-
 
 function rateToMilliseconds(val: number): number {
     return Math.round(1000 / (val / 60));
@@ -78,13 +76,12 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
         display?.classList.toggle("bg-emerald-900");
         setTickCount((t) => {
             if (meter.measure != 8) {
-                if (t % meter.beats == meter.beats - 1)
+                if (t % meter.beats + 1 == meter.beats)
                     accent();
                 else
                     beat();
             } else {
-                console.log(t % meter.beats + 1);
-                if (t % meter.beats == meter.beats - 1 || (t % meter.beats + 1) == (meter.measure / 2) - 1)
+                if (t % meter.beats + 1 == meter.beats || (t % meter.beats + 1) == (meter.measure / 2) - 1)
                     accent();
                 else
                     beat();
@@ -94,13 +91,31 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
     }
 
     function accent() {
-        highClick.currentTime = 0;
-        highClick.play();
+        if (highClick == null) return;
+
+        if (highClick.ended) {
+            highClick.currentTime = 0;
+            highClick.play();
+        }
+        else
+            decrossAudio(highClick);
     }
 
     function beat() {
-        lowClick.currentTime = 0;
-        lowClick.play();
+        if (lowClick == null) return;
+
+        if (lowClick.ended) {
+            lowClick.currentTime = 0;
+            lowClick.play();
+        }
+        else
+            decrossAudio(lowClick);
+    }
+
+    function decrossAudio(e: HTMLAudioElement) {
+        const support = e.cloneNode() as HTMLAudioElement;
+        support.volume = e.volume;
+        support.play();
     }
 
     function setTempo(val: string): void {
@@ -141,7 +156,7 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
             <h1 className='text-4xl mb-4'>Metronome</h1>
             <p><span className='font-bold'>{rate}</span> BPM</p>
             <p>{makeTimeString()}</p>
-            <input type="range" min={40} max={220} className={"range accent-emerald-500 my-4 "} id="tslider" name="tslider" onChange={(e) => setTempo(e.target.value)} />
+            <input type="range" min={limits.minBPM} max={limits.maxBPM} className={"range accent-emerald-500 my-4 "} id="tslider" name="tslider" onChange={(e) => setTempo(e.target.value)} />
 
             <div className='flex justify-center my-4 h-10'>
                 <select id="tlist" className="bg-stone-900 p-2" onChange={(e) => { setTempo(e.target.value); }}>
