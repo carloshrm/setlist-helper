@@ -10,6 +10,12 @@
   font-size: 16pt;
 }
 
+@media (max-width: 576px) {
+  * {
+    font-size: 12pt;
+  }
+}
+
 a {
   text-decoration: none;
 }
