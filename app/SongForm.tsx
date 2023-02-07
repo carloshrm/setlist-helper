@@ -1,6 +1,8 @@
 'use client';
+import { Song } from '@prisma/client';
 import React, { useState, type ReactElement } from 'react';
-import { ISong, limits as songLimits } from './Song';
+import { limits as songLimits } from '../components/Song';
+import SongController from '../controllers/SongController';
 import styles from "./SongForm.module.css";
 
 function SongForm(): ReactElement {
@@ -28,11 +30,18 @@ function SongForm(): ReactElement {
                 </fieldset>
                 <button className='bg-red-900' type='button' onClick={(e) => {
                     const info = new FormData(document.getElementById("song_input_form") as HTMLFormElement);
-                    console.log(info);
+                    const newSong: ISong = {
+                        id: -1,
+                        title: info.get('title_in')?.toString() || "No title",
+                        comments: info.get('cmnt_in')?.toString() || "No comments",
+                        bpm: parseInt(info.get('bpm_in')?.toString() || "60"),
+                        date: new Date()
+                    };
+                    SongController.getInstance().setSong(newSong);
                 }}>Add</button>
             </form>
 
-        </div>
+        </div >
     );
 }
 

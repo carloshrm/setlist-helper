@@ -7,7 +7,7 @@ import { Song } from '@prisma/client';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      const callInfo: Song = JSON.parse(req.body);
+      const callInfo: Song = JSON.parse(req.body) as Song;
       try {
         const info = await prisma.song.create({ data: callInfo });
         return res.status(200).json(info);
