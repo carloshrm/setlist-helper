@@ -1,24 +1,16 @@
 import React, { type ReactElement } from 'react';
+import { Song } from '@prisma/client';
 
 export const limits = { minBPM: 40, maxBPM: 220 };
 
-export interface ISong {
-  id: number;
-  title: string;
-  comments: string;
-  bpm: number;
-  date: Date;
-}
-
 interface SongProps {
-  song: ISong;
+  song: Song;
 }
 
 function Song({ song }: SongProps): ReactElement {
-
   return (
     <div>
-      <p>Title: {song.title} BPM: {song.bpm} Date Added: {song.date.toLocaleDateString()}</p>
+      <p>Title: {song.title} BPM: {song.bpm} Date Added: {song.date_added.toString()}</p>
       <p>Comments: {song.comments}</p>
     </div>
   );
