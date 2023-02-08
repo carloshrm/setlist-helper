@@ -1,7 +1,11 @@
+import Setlist from '@/components/Setlist';
 import { Song } from '@prisma/client';
 
 export default class SongController {
     private static _instance: SongController;
+    private setList: Record<number, Song> = {};
+    private observers: Function[] = [];
+
     private constructor() { }
 
     public static getInstance(): SongController {
@@ -10,23 +14,66 @@ export default class SongController {
         return this._instance;
     }
 
-    async setSong(s: Song) {
-        const info = await fetch(`${process.env.BASE_FETCH_URL}/api/createSong`, {
+    private async fetchCall(endpoint: string, body: Song) {
+        const info = await fetch(`${process.env.BASE_FETCH_URL}${endpoint}`, {
             method: 'POST',
-            body: JSON.stringify(s),
+            body: JSON.stringify(body),
         });
-        if (info.ok === false)
+
+        if (info.ok === false) {
             console.log(info.statusText);
+            return null;
+        }
+        else {
+            const newInfo = await info.json();
+            return newInfo;
+        }
     }
 
-    async getSongs() {
+    async updateSong(s: Song) {
+        const updatedSong = await this.fetchCall("/api/updateSong", s);
+        if (updatedSong != null) {
+            this.setList[updatedSong.id] = updatedSong;
+            this.notifyAll();
+        }
+
+    }
+
+    async deleteSong(s: Song) {
+        const deletedSong = await this.fetchCall("/api/deleteSong", s);
+        if (deletedSong != null) {
+            delete this.setList[deletedSong.id];
+            this.notifyAll();
+        }
+    }
+
+    async createSong(s: Song) {
+        const newSong = await this.fetchCall("/api/createSong", s);
+        if (newSong != null) {
+            this.setList[newSong.id] = newSong;
+            this.notifyAll();
+        }
+    }
+
+    async getAllSongs(): Promise<Song[] | null> {
         const info = await fetch(`${process.env.BASE_FETCH_URL}/api/getSongs`);
         if (info.ok) {
-            return info.json();
+            const dbSongs = await info.json() as Song[];
+            this.setList = {};
+            dbSongs.forEach(s => this.setList[s.id] = s);
+            return Object.values(this.setList);
         }
-        return null;
+        else
+            return null;
     }
 
+    setObserverCallback(callback: Function) {
+        this.observers.push(callback);
+    }
+
+    private notifyAll() {
+        this.observers.forEach(o => o(Object.values(this.setList)));
+    }
 }
 
 
