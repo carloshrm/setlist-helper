@@ -28,6 +28,7 @@ function SongForm(): ReactElement {
                     <input type="number" min={songLimits.minBPM} max={songLimits.maxBPM} name="bpm_in" id="bpm_in" />
 
                 </fieldset>
+
                 <button className='bg-red-900' type='button' onClick={(e) => {
                     const info = new FormData(document.getElementById("song_input_form") as HTMLFormElement);
                     const newSong: Song = {
@@ -40,6 +41,7 @@ function SongForm(): ReactElement {
                     };
                     SongController.getInstance().createSong(newSong);
                 }}>Add</button>
+
             </form>
 
         </div >

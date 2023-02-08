@@ -23,7 +23,8 @@ function Setlist(): ReactElement {
   }, []);
 
   return (
-    <div>
+    <div className='bg-stone-800 flex flex-col w-2/3 m-2 p-1 lg:m-4 lg:p-2 '>
+      <h2 className='mb-4'>Setlist</h2>
       {allSongs.length <= 0 ? (<h1>Loading...</h1>) : allSongs.map((s) => { return <Song key={s.id} song={s} />; })}
       <button onClick={() => showForm(s => !s)}>Add</button>
       {add ? <SongForm /> : <></>}
