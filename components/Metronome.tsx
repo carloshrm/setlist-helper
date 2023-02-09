@@ -184,13 +184,13 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
             <div className='flex justify-center'>
                 <button onClick={startClicking} className={"px-8 py-2 mx-2 rounded-full font-bold " + (intervalID == -1 ? "bg-emerald-600" : "bg-emerald-800")}>start</button>
                 <button onClick={stopClicking} className="px-8 py-2 mx-2 bg-emerald-600 rounded-full font-bold">stop</button>
-            </div>
-            <div className='flex w-50 mt-4 justify-center px-2 scale-75'>
-                <p>vol</p>
-                <input className="w-2/3 mx-2 accent-gray-400" type="range" name="volume" id="volume" min={0} max={1} step={0.1} onChange={(e) => {
-                    highClick.volume = e.target.valueAsNumber;
-                    lowClick.volume = e.target.valueAsNumber;
-                }} />
+                <div className='flex w-50 mt-4 justify-center px-2 scale-75 self-start'>
+                    <p>vol</p>
+                    <input className="w-2/3 mx-2 accent-gray-400" type="range" name="volume" id="volume" min={0} max={1} step={0.1} onChange={(e) => {
+                        highClick.volume = e.target.valueAsNumber;
+                        lowClick.volume = e.target.valueAsNumber;
+                    }} />
+                </div>
             </div>
             <audio hidden preload='auto' src="/sounds/high_click.wav" id='high_click'></audio>
             <audio hidden preload='auto' src="/sounds/low_click.wav" id='low_click'></audio>

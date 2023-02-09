@@ -1,4 +1,3 @@
-import styles from './page.module.css';
 import Metronome from '../components/Metronome';
 import { Quicksand } from '@next/font/google';
 import Setlist from '@/components/Setlist';
