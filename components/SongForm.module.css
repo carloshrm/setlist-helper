@@ -1,3 +1,6 @@
 .input_form input {
-    color: black;
+    display: flex;
+    background-color: gray;
+    color: white;
+    width: 100%;
 }
