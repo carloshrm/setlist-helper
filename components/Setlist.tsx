@@ -9,7 +9,7 @@ import SongForm from '@/components/SongForm';
 
 function Setlist(): ReactElement {
   const [allSongs, setAllSongs] = useState<TSong[]>([]);
-  const [add, showForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -24,10 +24,10 @@ function Setlist(): ReactElement {
 
   return (
     <div className='bg-stone-800 flex flex-col w-full lg:w-2/3 mx-4 my-2 py-2 px-4 '>
-      <h2 className='mb-4'>Setlist</h2>
+      <h2 className='mb-2'>Setlist</h2>
       {allSongs.length <= 0 ? (<h1>Loading...</h1>) : allSongs.map((s) => { return <Song key={s.id} song={s} />; })}
-      <button onClick={() => showForm(s => !s)}>Add</button>
-      {add ? <SongForm /> : <></>}
+      <button className='self-start px-2 py-1 bg-stone-900' onClick={() => setShowForm(s => !s)}>Add</button>
+      {showForm ? <SongForm cclCallback={() => setShowForm(false)} /> : <></>}
     </div>
   );
 }
