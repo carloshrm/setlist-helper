@@ -1,4 +1,5 @@
 'use client';
+import TempoController from '@/controllers/TempoController';
 import React, { useEffect, useState, type ReactElement } from 'react';
 import { limits } from './Song';
 
@@ -30,11 +31,11 @@ function rateToMilliseconds(val: number): number {
     return Math.round(1000 / (val / 60));
 }
 
-function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactElement {
+function Metronome(): ReactElement {
     const [tickCount, setTickCount] = useState(-1);
     const [meter, setMeter] = useState<Meter>({ beats: 4, measure: 4 });
     const [runTime, setTime] = useState(Date.now());
-    const [rate, setRate] = useState(0);
+    const [rate, setRate] = useState(120);
     const [intervalID, setIntervalID] = useState(-1);
 
     let highClick: HTMLAudioElement | null;
@@ -45,8 +46,7 @@ function Metronome(prop: { presetRate: number; presetMeter?: Meter; }): ReactEle
     }
 
     useEffect(() => {
-        setTempo(prop.presetRate.toString());
-        setTimeSig(prop.presetMeter ?? meter);
+        TempoController.setup((n: number) => setTempo(n.toString()));
     }, []);
 
     useEffect(() => {
