@@ -23,10 +23,10 @@ function Setlist(): ReactElement {
   }, []);
 
   return (
-    <div className='bg-stone-800 flex flex-col w-full lg:w-2/3 mx-4 my-2 py-2 px-4 '>
-      <h2 className='mb-2'>Setlist</h2>
+    <div className='bg-stone-800 flex flex-col w-full lg:w-5/6 my-2 p-1 '>
+      <h2>Setlist</h2>
       {allSongs.length <= 0 ? (<h1>Loading...</h1>) : allSongs.map((s) => { return <Song key={s.id} song={s} />; })}
-      <button className='self-start px-2 py-1 bg-stone-900' onClick={() => setShowForm(s => !s)}>Add</button>
+      <button className='self-start px-2 py-1 border-2 bg-stone-900' onClick={() => setShowForm(s => !s)}>Add</button>
       {showForm ? <SongForm cclCallback={() => setShowForm(false)} /> : <></>}
     </div>
   );

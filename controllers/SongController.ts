@@ -1,4 +1,3 @@
-import Setlist from '@/components/Setlist';
 import { Song } from '@prisma/client';
 
 export default class SongController {

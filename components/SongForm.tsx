@@ -86,6 +86,7 @@ function SongForm({ song, cclCallback }: FormProps): ReactElement {
                         song.title = newSongInfo.title;
                         song.comments = newSongInfo.comments;
                         song.date_added = newSongInfo.date_added;
+                        song.bpm = newSongInfo.bpm;
                         SongController.getInstance().updateSong(song);
                     }
                     cclCallback();

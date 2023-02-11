@@ -4,6 +4,7 @@ import SongController from '@/controllers/SongController';
 import { PencilSquareIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import Popup from './Popup';
 import SongForm from './SongForm';
+import TempoController from '@/controllers/TempoController';
 
 export const limits = { minBPM: 40, maxBPM: 220 };
 
@@ -14,19 +15,35 @@ interface SongProps {
 function Song({ song }: SongProps): ReactElement {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [active, setActive] = useState(false);
 
   return (
-    <div className='border-stone-600 border-2 flex my-2 flex-col'>
+    <div onClick={() => {
+      return TempoController.setTempo(song.bpm);
+      setActive(true);
+    }} className='border-stone-900 border-4 flex my-2 flex-col'>
 
       <div className='flex w-full justify-between bg-emerald-900 px-1'>
         <p>{song.title}</p>
         <p>{song.bpm} BPM</p>
       </div>
 
-      <p>{song.comments}</p>
+      <p className='px-2'>{song.comments}</p>
 
+      {showDelete
+        ? <Popup
+          okCallback={() => {
+            () => setShowDelete(false);
+            SongController.getInstance().deleteSong(song);
+          }}
+          cclCallback={() => {
+            setShowDelete(false);
+          }} />
+        : <></>}
       <div className='flex mt-2 items-center justify-between'>
         <p className='text-xs'>Added on {new Date(song.date_added).toLocaleDateString()}</p>
+
+
         <div>
           <button onClick={() => setShowEdit(e => !e)}>
             <PencilSquareIcon className="h-4 w-4" />
@@ -37,17 +54,6 @@ function Song({ song }: SongProps): ReactElement {
         </div>
       </div>
 
-      {showDelete
-        ? <Popup message={`Really delete '${song.title}'?`}
-          okCallback={() => {
-            () =>
-              setShowDelete(false);
-            SongController.getInstance().deleteSong(song);
-          }}
-          cclCallback={() => {
-            setShowDelete(false);
-          }} />
-        : <></>}
 
       {showEdit
         ? <SongForm song={song} cclCallback={() => setShowEdit(false)} />
