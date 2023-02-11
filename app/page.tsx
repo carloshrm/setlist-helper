@@ -6,8 +6,8 @@ const quicksand = Quicksand();
 
 export default async function Home() {
   return (
-    <main className={`flex flex-col justify-center items-center h-screen bg-stone-900 ${quicksand.className}`}>
-      <Metronome presetRate={120} />
+    <main className={`flex flex-col justify-center items-center h-fit bg-stone-900 ${quicksand.className}`}>
+      <Metronome />
       <Setlist />
     </main>
   );
