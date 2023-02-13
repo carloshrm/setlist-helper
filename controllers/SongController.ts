@@ -54,7 +54,7 @@ export default class SongController {
         }
     }
 
-    async getAllSongs(): Promise<Song[] | null> {
+    async getAllSongs() {
         const info = await fetch(`${process.env.BASE_FETCH_URL}/api/getSongs`);
         if (info.ok) {
             const dbSongs = await info.json() as Song[];
@@ -66,7 +66,7 @@ export default class SongController {
             return null;
     }
 
-    setObserverCallback(callback: Function) {
+    setObserverCallback(callback: Function): void {
         this.observers.push(callback);
     }
 

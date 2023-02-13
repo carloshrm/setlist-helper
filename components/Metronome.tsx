@@ -139,7 +139,6 @@ function Metronome(): ReactElement {
             beats.value = m.beats.toString();
         if (measure.valueAsNumber != m.measure)
             measure.value = m.measure.toString();
-
         setMeter(m);
     }
 
@@ -163,15 +162,11 @@ function Metronome(): ReactElement {
                     {Object.entries(Tempo).map(([k, v]) => <option key={v} value={k} label={v + " :: " + k}></option>)}
                 </select>
                 <div className='flex flex-col align-middle justify-evenly mx-4 p-2'>
-                    <select className='bg-stone-900 text-center' name="meterbeats" id="meterbeats" onChange={(e) => setMeter((p) => {
-                        return { beats: parseInt(e.target.value), measure: p.measure };
-                    })}>
+                    <select className='bg-stone-900 text-center' name="meterbeats" id="meterbeats" onChange={(e) => setTimeSig({ beats: parseInt(e.target.value), measure: meter.measure })}>
                         {[...Array(21)].map((v, i) => <option key={i} value={i + 1} label={(i + 1).toString()}></option>)}
                     </select>
 
-                    <select className='bg-stone-900 text-center' name="metermeasure" id="metermeasure" onChange={(e) => setMeter((p) => {
-                        return { beats: p.beats, measure: parseInt(e.target.value) };
-                    })}>
+                    <select className='bg-stone-900 text-center' name="metermeasure" id="metermeasure" onChange={(e) => setTimeSig({ beats: meter.beats, measure: parseInt(e.target.value) })}>
                         <option value="2" label='2'>2</option>
                         <option value="4" label='4'>4</option>
                         <option value="8" label='8'>8</option>
@@ -187,8 +182,10 @@ function Metronome(): ReactElement {
                 <div className='flex w-50 mt-4 justify-center px-2 scale-75 self-start'>
                     <p>vol</p>
                     <input className="w-2/3 mx-2 accent-gray-400" type="range" name="volume" id="volume" min={0} max={1} step={0.1} onChange={(e) => {
-                        highClick.volume = e.target.valueAsNumber;
-                        lowClick.volume = e.target.valueAsNumber;
+                        if (highClick != null && lowClick != null) {
+                            highClick.volume = e.target.valueAsNumber;
+                            lowClick.volume = e.target.valueAsNumber;
+                        }
                     }} />
                 </div>
             </div>

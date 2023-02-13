@@ -43,7 +43,6 @@ function Song({ song }: SongProps): ReactElement {
       <div className='flex mt-2 items-center justify-between'>
         <p className='text-xs'>Added on {new Date(song.date_added).toLocaleDateString()}</p>
 
-
         <div>
           <button onClick={() => setShowEdit(e => !e)}>
             <PencilSquareIcon className="h-4 w-4" />
@@ -53,7 +52,6 @@ function Song({ song }: SongProps): ReactElement {
           </button>
         </div>
       </div>
-
 
       {showEdit
         ? <SongForm song={song} cclCallback={() => setShowEdit(false)} />
