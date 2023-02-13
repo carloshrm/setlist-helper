@@ -47,6 +47,7 @@ function Metronome(): ReactElement {
 
     useEffect(() => {
         TempoController.setup((n: number) => setTempo(n.toString()));
+        setTimeSig(meter);
     }, []);
 
     useEffect(() => {
@@ -98,7 +99,7 @@ function Metronome(): ReactElement {
             highClick.play();
         }
         else
-            decrossAudio(highClick);
+            audioStutterFix(highClick);
     }
 
     function beat() {
@@ -109,10 +110,10 @@ function Metronome(): ReactElement {
             lowClick.play();
         }
         else
-            decrossAudio(lowClick);
+            audioStutterFix(lowClick);
     }
 
-    function decrossAudio(e: HTMLAudioElement) {
+    function audioStutterFix(e: HTMLAudioElement) {
         const support = e.cloneNode() as HTMLAudioElement;
         support.volume = e.volume;
         support.play();
@@ -122,13 +123,10 @@ function Metronome(): ReactElement {
         let list = document.getElementById("tlist") as HTMLInputElement;
         let range = document.getElementById("tslider") as HTMLInputElement;
         let selected = Tempo[parseInt(val)];
-
         if (selected != undefined && list != null)
             list.value = val;
-
         if (range.value != val)
             range.value = val;
-
         setRate(parseInt(val));
     }
 
@@ -156,7 +154,6 @@ function Metronome(): ReactElement {
             <p><span className='font-bold'>{rate}</span> BPM</p>
             <p>{makeTimeString()}</p>
             <input type="range" min={limits.minBPM} max={limits.maxBPM} className={"range accent-emerald-500 my-4 "} id="tslider" name="tslider" onChange={(e) => setTempo(e.target.value)} />
-
             <div className='flex justify-center my-4 h-10'>
                 <select id="tlist" className="bg-stone-900 p-2" onChange={(e) => { setTempo(e.target.value); }}>
                     {Object.entries(Tempo).map(([k, v]) => <option key={v} value={k} label={v + " :: " + k}></option>)}
@@ -165,7 +162,6 @@ function Metronome(): ReactElement {
                     <select className='bg-stone-900 text-center' name="meterbeats" id="meterbeats" onChange={(e) => setTimeSig({ beats: parseInt(e.target.value), measure: meter.measure })}>
                         {[...Array(21)].map((v, i) => <option key={i} value={i + 1} label={(i + 1).toString()}></option>)}
                     </select>
-
                     <select className='bg-stone-900 text-center' name="metermeasure" id="metermeasure" onChange={(e) => setTimeSig({ beats: meter.beats, measure: parseInt(e.target.value) })}>
                         <option value="2" label='2'>2</option>
                         <option value="4" label='4'>4</option>
