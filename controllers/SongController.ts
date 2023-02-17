@@ -14,7 +14,7 @@ export default class SongController {
     }
 
     private async fetchCall(endpoint: string, body: Song) {
-        const info = await fetch(`${process.env.BASE_FETCH_URL}${endpoint}`, {
+        const info = await fetch(`${endpoint}`, {
             method: 'POST',
             body: JSON.stringify(body),
         });
@@ -55,7 +55,7 @@ export default class SongController {
     }
 
     async getAllSongs() {
-        const info = await fetch(`${process.env.BASE_FETCH_URL}/api/getSongs`);
+        const info = await fetch("/api/getSongs");
         if (info.ok) {
             const dbSongs = await info.json() as Song[];
             this.setList = {};
