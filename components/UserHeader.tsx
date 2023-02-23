@@ -1,8 +1,6 @@
 import React, { useState, type ReactElement } from 'react';
 
 function UserHeader(): ReactElement {
-
-
     return (
         <div>
             <a href="/api/auth/login">Login</a>
