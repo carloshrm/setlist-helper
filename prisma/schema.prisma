@@ -11,9 +11,7 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id    String @id @default(uuid())
   songs Song[]
 }
 
@@ -24,5 +22,5 @@ model Song {
   bpm        Int
   date_added DateTime @default(now())
   User       User?    @relation(fields: [userId], references: [id])
-  userId     Int?
+  userId     String?
 }
