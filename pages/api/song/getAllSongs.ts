@@ -10,6 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const info = await prisma.song.findMany();
       return res.status(200).json(info);
     } catch (e) {
+      console.log(e);
       return res.status(500);
     }
   }

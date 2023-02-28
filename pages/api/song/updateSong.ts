@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (req.method === 'POST') {
     const callInfo: Song = JSON.parse(req.body) as Song;
     try {
-      const resp = await prisma.song.update({
+      const response = await prisma.song.update({
         where: { id: callInfo.id },
         data: {
           title: callInfo.title,
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           date_added: callInfo.date_added
         }
       });
-      return res.status(200).json(resp);
+      return res.status(200).json(response);
     } catch (e) {
       return res.status(500);
     }
