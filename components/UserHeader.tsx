@@ -1,17 +1,14 @@
-'use client';
-import UserService from '@/services/UserService';
-import React, { useEffect, useState, type ReactElement } from 'react';
+import UserController from '@/controllers/UserController';
 
-export default function UserHeader() {
-    const [userID, setUserID] = useState("");
-    useEffect(() => {
-        (async () => {
-            setUserID(await UserService.getInstance().GetID());
-        })();
-    });
+export default async function UserHeader() {
+    const userID = await UserController.getInstance().getUser();
+
     return (
         <div>
-            <p>{userID}</p>
+            {
+                typeof window !== undefined ? (() => document.cookie = `userid=${userID}; SameSite=None; Secure`)() : ""
+            }
+            <p>{userID.id}</p>
         </div>
     );
 }
