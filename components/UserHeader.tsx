@@ -1,12 +1,17 @@
-import React, { useState, type ReactElement } from 'react';
+'use client';
+import UserService from '@/services/UserService';
+import React, { useEffect, useState, type ReactElement } from 'react';
 
-function UserHeader(): ReactElement {
+export default function UserHeader() {
+    const [userID, setUserID] = useState("");
+    useEffect(() => {
+        (async () => {
+            setUserID(await UserService.getInstance().GetID());
+        })();
+    });
     return (
         <div>
-            <a href="/api/auth/login">Login</a>
-            <a href="/api/auth/logout">Logout</a>
+            <p>{userID}</p>
         </div>
     );
 }
-
-export default UserHeader;
