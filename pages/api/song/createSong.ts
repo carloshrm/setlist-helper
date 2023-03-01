@@ -7,8 +7,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (req.method === 'POST') {
     const callInfo: Song = JSON.parse(req.body) as Song;
     try {
-      const resp = await prisma.song.create({
-        data: {
+      const resp = await prisma.song.upsert({
+        where: { id: callInfo.id },
+        create: callInfo,
+        update: {
+          userId: callInfo.userId,
           title: callInfo.title,
           comments: callInfo.comments,
           bpm: callInfo.bpm,

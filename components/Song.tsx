@@ -10,17 +10,18 @@ export const limits = { minBPM: 40, maxBPM: 220 };
 
 interface SongProps {
   song: Song;
+  saveCallback: Function;
 }
 
-function Song({ song }: SongProps): ReactElement {
+function Song({ song, saveCallback }: SongProps): ReactElement {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [active, setActive] = useState(false);
 
   return (
     <div onClick={() => {
-      return TempoController.setTempo(song.bpm);
       setActive(true);
+      return TempoController.setTempo(song.bpm);
     }} className='border-stone-900 border-4 flex my-2 flex-col'>
 
       <div className='flex w-full justify-between bg-emerald-900 px-1'>
@@ -54,7 +55,7 @@ function Song({ song }: SongProps): ReactElement {
       </div>
 
       {showEdit
-        ? <SongForm song={song} cclCallback={() => setShowEdit(false)} />
+        ? <SongForm song={song} cclCallback={() => setShowEdit(false)} saveCallback={saveCallback} />
         : <></>}
 
     </div>

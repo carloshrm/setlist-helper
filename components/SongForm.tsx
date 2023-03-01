@@ -1,16 +1,16 @@
 'use client';
 import { Song } from '@prisma/client';
-import React, { useEffect, useState, type ReactElement } from 'react';
+import React, { useState, type ReactElement } from 'react';
 import { limits as songLimits } from './Song';
-import SongController from '../controllers/SongController';
 import styles from "./SongForm.module.css";
 
 interface FormProps {
     song?: Song;
     cclCallback: Function;
+    saveCallback: Function;
 }
 
-function SongForm({ song, cclCallback }: FormProps): ReactElement {
+function SongForm({ song, cclCallback, saveCallback }: FormProps): ReactElement {
     const [title, setTitle] = useState(song === undefined ? "" : song.title);
     const [comment, setComment] = useState(song === undefined ? "" : (song.comments || ""));
     const [bpm, setBpm] = useState(song === undefined ? 60 : song.bpm);
@@ -80,15 +80,7 @@ function SongForm({ song, cclCallback }: FormProps): ReactElement {
                         date_added: date,
                         userId: null
                     };
-                    if (song === undefined)
-                        SongController.getInstance().createSong(newSongInfo);
-                    else {
-                        song.title = newSongInfo.title;
-                        song.comments = newSongInfo.comments;
-                        song.date_added = newSongInfo.date_added;
-                        song.bpm = newSongInfo.bpm;
-                        SongController.getInstance().updateSong(song);
-                    }
+                    saveCallback(newSongInfo);
                     cclCallback();
                 }}>Add</button>
 
