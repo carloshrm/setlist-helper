@@ -16,11 +16,11 @@ model User_info {
 }
 
 model Song {
-  id         Int        @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   title      String
   comments   String?
   bpm        Int
-  date_added DateTime   @default(now())
-  User_info  User_info? @relation(fields: [userId], references: [id])
-  userId     String?
+  date_added DateTime  @default(now())
+  User_info  User_info @relation(fields: [userId], references: [id])
+  userId     String
 }
