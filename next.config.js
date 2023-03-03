@@ -2,6 +2,9 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: false,
+  env: {
+    BASE_URL: process.env.BASE_URL,
+  },
   experimental: {
     appDir: true,
     fontLoaders: [

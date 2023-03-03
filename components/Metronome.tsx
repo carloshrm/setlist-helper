@@ -1,6 +1,6 @@
 'use client';
 import TempoController from '@/controllers/TempoController';
-import React, { useEffect, useState, type ReactElement } from 'react';
+import React, { OptionHTMLAttributes, useEffect, useState, type ReactElement } from 'react';
 import { limits } from './Song';
 
 const Tempo: { [key: number]: string; } = {
@@ -31,7 +31,7 @@ function rateToMilliseconds(val: number): number {
     return Math.round(1000 / (val / 60));
 }
 
-function Metronome(): ReactElement {
+export default function Metronome(): ReactElement {
     const [tickCount, setTickCount] = useState(-1);
     const [meter, setMeter] = useState<Meter>({ beats: 4, measure: 4 });
     const [runTime, setTime] = useState(Date.now());
@@ -48,6 +48,7 @@ function Metronome(): ReactElement {
     useEffect(() => {
         TempoController.setup((n: number) => setTempo(n.toString()));
         setTimeSig(meter);
+        setTempo(rate.toString());
     }, []);
 
     useEffect(() => {
@@ -122,9 +123,21 @@ function Metronome(): ReactElement {
     function setTempo(val: string): void {
         let list = document.getElementById("tlist") as HTMLInputElement;
         let range = document.getElementById("tslider") as HTMLInputElement;
-        let selected = Tempo[parseInt(val)];
-        if (selected != undefined && list != null)
-            list.value = val;
+        let selectedValue = parseInt(val);
+        let selectedTempo = Tempo[selectedValue];
+        if (list != null) {
+            if (selectedTempo != undefined) {
+                list.value = selectedValue.toString();
+            }
+            else {
+                let rounding = selectedValue;
+                while (selectedTempo === undefined) {
+                    selectedTempo = Tempo[--rounding];
+                }
+                (document.getElementById("freeoption") as HTMLOptionElement).label = `${selectedTempo} :: ${selectedValue}`;
+                list.value = "-1";
+            }
+        }
         if (range.value != val)
             range.value = val;
         setRate(parseInt(val));
@@ -141,22 +154,30 @@ function Metronome(): ReactElement {
     }
 
     function makeTimeString(): string {
-        let offsetDate = new Date(Date.now() - runTime);
-        let seconds = offsetDate.getUTCSeconds();
-        let minutes = offsetDate.getUTCMinutes();
-        let hours = offsetDate.getUTCHours();
-        return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+        if (intervalID === -1)
+            return "00:00:00";
+        else {
+            let offsetDate = new Date(Date.now() - runTime);
+            let seconds = offsetDate.getUTCSeconds();
+            let minutes = offsetDate.getUTCMinutes();
+            let hours = offsetDate.getUTCHours();
+            return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+        }
     }
 
     return (
         <div className='flex flex-col w-full lg:w-2/3 p-2 lg:px-8 lg:py-4 bg-stone-800'>
+            {/* bpm and time text header */}
             <h1 className='text-4xl mb-4'>Metronome</h1>
             <p><span className='font-bold'>{rate}</span> BPM</p>
             <p>{makeTimeString()}</p>
+            {/* tempo slider */}
             <input type="range" min={limits.minBPM} max={limits.maxBPM} className={"range accent-emerald-500 my-4 "} id="tslider" name="tslider" onChange={(e) => setTempo(e.target.value)} />
+            {/* tempo dropdown and measure select */}
             <div className='flex justify-center my-4 h-10'>
                 <select id="tlist" className="bg-stone-900 p-2" onChange={(e) => { setTempo(e.target.value); }}>
                     {Object.entries(Tempo).map(([k, v]) => <option key={v} value={k} label={v + " :: " + k}></option>)}
+                    <option id='freeoption' key={-1} value={-1} label={":: "}></option>
                 </select>
                 <div className='flex flex-col align-middle justify-evenly mx-4 p-2'>
                     <select className='bg-stone-900 text-center' name="meterbeats" id="meterbeats" onChange={(e) => setTimeSig({ beats: parseInt(e.target.value), measure: meter.measure })}>
@@ -169,9 +190,11 @@ function Metronome(): ReactElement {
                     </select>
                 </div>
             </div>
+            {/* counter */}
             <div className='p-4 my-6 bg-stone-900 bg-emerald-900' id='tempodisplay'>
                 <h1 className='text-6xl text-center font-bold'>{(tickCount % meter.beats) + 1}</h1>
             </div>
+            {/* controls */}
             <div className='flex justify-center'>
                 <button onClick={startClicking} className={"px-8 py-2 mx-2 rounded-full font-bold " + (intervalID == -1 ? "bg-emerald-600" : "bg-emerald-800")}>start</button>
                 <button onClick={stopClicking} className="px-8 py-2 mx-2 bg-emerald-600 rounded-full font-bold">stop</button>
@@ -185,10 +208,9 @@ function Metronome(): ReactElement {
                     }} />
                 </div>
             </div>
+            {/* audio sounds (hidden) */}
             <audio hidden preload='auto' src="/sounds/high_click.wav" id='high_click'></audio>
             <audio hidden preload='auto' src="/sounds/low_click.wav" id='low_click'></audio>
         </div>
     );
 }
-
-export default Metronome;
