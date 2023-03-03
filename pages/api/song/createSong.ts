@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/prisma/client';
-import { Song } from '@prisma/client';
+import { Song, User_info } from '@prisma/client';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Song>) {
   if (req.method === 'POST') {
@@ -9,7 +9,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     try {
       const resp = await prisma.song.upsert({
         where: { id: callInfo.id },
-        create: callInfo,
+        create: {
+          userId: callInfo.userId,
+          title: callInfo.title,
+          comments: callInfo.comments,
+          bpm: callInfo.bpm,
+          date_added: callInfo.date_added
+        },
         update: {
           userId: callInfo.userId,
           title: callInfo.title,
