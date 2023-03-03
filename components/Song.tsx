@@ -1,6 +1,5 @@
-import React, { useState, type ReactElement } from 'react';
+import React, { SetStateAction, useState, type ReactElement } from 'react';
 import { Song } from '@prisma/client';
-import SongController from '@/controllers/SongController';
 import { PencilSquareIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import Popup from './Popup';
 import SongForm from './SongForm';
@@ -10,10 +9,10 @@ export const limits = { minBPM: 40, maxBPM: 220 };
 
 interface SongProps {
   song: Song;
-  saveCallback: Function;
+  songStateSetter: React.Dispatch<SetStateAction<Song[]>>;
 }
 
-function Song({ song, saveCallback }: SongProps): ReactElement {
+function Song({ song, songStateSetter: saveCallback }: SongProps): ReactElement {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [active, setActive] = useState(false);
@@ -33,9 +32,13 @@ function Song({ song, saveCallback }: SongProps): ReactElement {
 
       {showDelete
         ? <Popup
-          okCallback={() => {
-            () => setShowDelete(false);
-            SongController.getInstance().deleteSong(song);
+          okCallback={async () => {
+            setShowDelete(false);
+            saveCallback(all => all.filter(s => s.id != song.id));
+            fetch(`${process.env.BASE_URL}/api/song/deleteSong`, {
+              method: 'POST',
+              body: JSON.stringify(song)
+            });
           }}
           cclCallback={() => {
             setShowDelete(false);
@@ -55,7 +58,7 @@ function Song({ song, saveCallback }: SongProps): ReactElement {
       </div>
 
       {showEdit
-        ? <SongForm song={song} cclCallback={() => setShowEdit(false)} saveCallback={saveCallback} />
+        ? <SongForm song={song} cclCallback={() => setShowEdit(false)} songStateSetter={saveCallback} />
         : <></>}
 
     </div>
