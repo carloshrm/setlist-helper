@@ -1,16 +1,16 @@
 'use client';
 import { Song } from '@prisma/client';
-import React, { useState, type ReactElement } from 'react';
+import React, { SetStateAction, useState, type ReactElement } from 'react';
 import { limits as songLimits } from './Song';
 import styles from "./SongForm.module.css";
 
 interface FormProps {
     song?: Song;
     cclCallback: Function;
-    saveCallback: Function;
+    songStateSetter: React.Dispatch<SetStateAction<Song[]>>;
 }
 
-function SongForm({ song, cclCallback, saveCallback }: FormProps): ReactElement {
+function SongForm({ song, cclCallback, songStateSetter }: FormProps): ReactElement {
     const [title, setTitle] = useState(song === undefined ? "" : song.title);
     const [comment, setComment] = useState(song === undefined ? "" : (song.comments || ""));
     const [bpm, setBpm] = useState(song === undefined ? 60 : song.bpm);
@@ -40,8 +40,8 @@ function SongForm({ song, cclCallback, saveCallback }: FormProps): ReactElement 
                         id="bpm_in"
                         value={bpm}
                         onKeyDown={(e) => {
-                            const valid = Array(10).fill(null).map((val, i) => i.toString());
-                            valid.push('Backspace');
+                            const valid = Array(10).fill(null).map((val, i) => i.toString()).concat(['Backspace', 'ArrowRight', 'ArrowLeft', 'Delete']);;
+
                             if (!valid.includes(e.key)) {
                                 e.preventDefault();
                             }
@@ -73,14 +73,20 @@ function SongForm({ song, cclCallback, saveCallback }: FormProps): ReactElement 
                     let bpmVal = parseInt(formInput.get('bpm_in')?.toString() || "60");
                     bpmVal = bpmVal < 40 ? 40 : bpmVal > 220 ? 220 : bpmVal;
                     const newSongInfo: Song = {
-                        id: -1,
+                        id: song === undefined ? -1 : song.id,
                         title: formInput.get('title_in')?.toString() || "No title",
                         comments: formInput.get('cmnt_in')?.toString() || "No comments",
                         bpm: bpmVal,
                         date_added: date,
-                        userId: null
+                        userId: ""
                     };
-                    saveCallback(newSongInfo);
+
+                    songStateSetter(list => {
+                        if (song === undefined)
+                            return [...list, newSongInfo];
+                        else
+                            return list.map(s => s.id === song.id ? newSongInfo : s);
+                    });
                     cclCallback();
                 }}>Add</button>
 
