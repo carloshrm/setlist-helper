@@ -51,17 +51,21 @@ export default function Setlist(): ReactElement {
   }, [allSongs]);
 
   function saveSetlist(id: string) {
-    allSongs.forEach(s => {
+    allSongs.forEach(async s => {
       s.userId = id;
-      upsertSong(s);
+      const response = await upsertSong(s);
+      console.log("response::::::" + response.id);
+
+      s.id = response.id;
     });
   }
 
-  async function upsertSong(s: SongModel) {
+  async function upsertSong(s: SongModel): Promise<SongModel> {
     const info = await fetch(`${process.env.BASE_URL}/api/song/createSong`, {
       method: 'POST',
       body: JSON.stringify(s),
     });
+    return info.json();
   }
 
   return (

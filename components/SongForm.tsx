@@ -17,7 +17,7 @@ function SongForm({ song, cclCallback, songStateSetter }: FormProps): ReactEleme
     const [date, setDate] = useState(song === undefined ? new Date() : new Date(song.date_added));
 
     return (
-        <div className='w-1/2 h-fit border-2 border-emerald-900 bg-stone-900 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-between px-4 py-2'>
+        <div className='w-1/2 h-fit border-2 border-emerald-900 bg-stone-900 absolute left-1/2 transform -translate-x-1/2 -translate-y-2/4 flex flex-col justify-between px-4 py-2'>
             <form action="" id='song_input_form' className={styles.input_form}>
                 <fieldset>
                     <legend>{song === undefined ? "Add a new Song: " : "Edit: "}</legend>
