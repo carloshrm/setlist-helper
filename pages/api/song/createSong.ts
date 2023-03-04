@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/prisma/client';
-import { Song, User_info } from '@prisma/client';
+import { Song } from '@prisma/client';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Song>) {
   if (req.method === 'POST') {

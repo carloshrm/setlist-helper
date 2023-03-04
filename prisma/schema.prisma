@@ -21,6 +21,6 @@ model Song {
   comments   String?
   bpm        Int
   date_added DateTime  @default(now())
-  User_info  User_info @relation(fields: [userId], references: [id])
+  User_info  User_info @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
 }
