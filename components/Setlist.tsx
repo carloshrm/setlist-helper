@@ -41,8 +41,12 @@ export default function Setlist(): ReactElement {
   }, []);
 
   useEffect(() => {
-    if (localUser != undefined)
+    if (localUser != undefined) {
       document.cookie = `userid=${localUser}; SameSite=None; Secure`;
+      fetchSongs(localUser);
+      console.log("setting user");
+
+    }
   }, [localUser]);
 
   useEffect(() => {
@@ -54,8 +58,6 @@ export default function Setlist(): ReactElement {
     allSongs.forEach(async s => {
       s.userId = id;
       const response = await upsertSong(s);
-      console.log("response::::::" + response.id);
-
       s.id = response.id;
     });
   }

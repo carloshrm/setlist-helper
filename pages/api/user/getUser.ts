@@ -5,11 +5,11 @@ import { User_info } from '@prisma/client';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<User_info>) {
-  if (req.method === 'GET') {
+  if (req.method === 'POST') {
     try {
       const response = await prisma.user_info.findUnique({
         where: {
-          id: req.headers.cookie
+          id: req.body
         }
       });
       if (response != null)
