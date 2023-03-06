@@ -39,20 +39,12 @@ function SongForm({ song, cclCallback, songStateSetter }: FormProps): ReactEleme
                         name="bpm_in"
                         id="bpm_in"
                         value={bpm}
-                        onKeyDown={(e) => {
-                            const valid = Array(10).fill(null).map((val, i) => i.toString()).concat(['Backspace', 'ArrowRight', 'ArrowLeft', 'Delete']);;
-
-                            if (!valid.includes(e.key)) {
-                                e.preventDefault();
-                            }
-
+                        onSelect={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            e.target.value = "";
                         }}
-                        onChange={(e) => {
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             if (Number(e.target.value))
                                 setBpm(e.target.valueAsNumber);
-                            else {
-                                e.target.value = bpm.toString();
-                            }
                         }} />
 
                     <label htmlFor="date_in">Date Started:</label>

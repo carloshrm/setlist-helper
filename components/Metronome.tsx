@@ -46,7 +46,7 @@ export default function Metronome(): ReactElement {
     }
 
     useEffect(() => {
-        TempoController.setup((n: number) => setTempo(n.toString()));
+        TempoController.tempoSetup((n: number) => setTempo(n.toString()));
         setTimeSig(meter);
         setTempo(rate.toString());
     }, []);

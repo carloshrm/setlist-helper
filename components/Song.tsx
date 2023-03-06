@@ -10,18 +10,17 @@ export const limits = { minBPM: 40, maxBPM: 220 };
 interface SongProps {
   song: Song;
   songStateSetter: React.Dispatch<SetStateAction<Song[]>>;
+  isActive: boolean;
 }
 
-function Song({ song, songStateSetter: saveCallback }: SongProps): ReactElement {
+function Song({ song, songStateSetter, isActive }: SongProps): ReactElement {
   const [showDelete, setShowDelete] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [active, setActive] = useState(false);
 
   return (
-    <div onClick={() => {
-      setActive(true);
-      return TempoController.setTempo(song.bpm);
-    }} className='border-stone-900 border-4 flex my-2 flex-col'>
+    <div onClick={(e) => {
+      TempoController.setTempo(song);
+    }} className={'border-stone-900 border-2 p-2 flex my-2 flex-col ' + (isActive ? 'bg-stone-900 border-emerald-800 scale-105' : '')} >
 
       <div className='flex w-full justify-between bg-emerald-900 px-1'>
         <p>{song.title}</p>
@@ -34,8 +33,8 @@ function Song({ song, songStateSetter: saveCallback }: SongProps): ReactElement 
         ? <Popup
           okCallback={async () => {
             setShowDelete(false);
-            saveCallback(all => all.filter(s => s.id != song.id));
-            fetch(`${process.env.BASE_URL}/api/song/deleteSong`, {
+            songStateSetter(all => all.filter(s => s.id != song.id));
+            fetch(`$/api/song/deleteSong`, {
               method: 'POST',
               body: JSON.stringify(song)
             });
@@ -58,7 +57,7 @@ function Song({ song, songStateSetter: saveCallback }: SongProps): ReactElement 
       </div>
 
       {showEdit
-        ? <SongForm song={song} cclCallback={() => setShowEdit(false)} songStateSetter={saveCallback} />
+        ? <SongForm song={song} cclCallback={() => setShowEdit(false)} songStateSetter={songStateSetter} />
         : <></>}
 
     </div>

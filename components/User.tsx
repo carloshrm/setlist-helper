@@ -15,14 +15,14 @@ export default function User(props: { userID: string | undefined; setUserCallbac
     }
 
     async function saveID(id: string) {
-        const info = await fetch(`${process.env.BASE_URL}/api/user/createUser`, {
+        const info = await fetch(`/api/user/createUser`, {
             method: 'POST',
             body: JSON.stringify({ id: id }),
         });
     }
 
     async function deleteUser(userID: string) {
-        const info = await fetch(`${process.env.BASE_URL}/api/user/deleteUser`, {
+        const info = await fetch(`/api/user/deleteUser`, {
             method: 'POST',
             body: JSON.stringify({ id: userID }),
         });
@@ -33,7 +33,7 @@ export default function User(props: { userID: string | undefined; setUserCallbac
     }
 
     async function checkUserExists(userID: string): Promise<Boolean> {
-        const dbUser = await fetch(`${process.env.BASE_URL}/api/user/getUser`, {
+        const dbUser = await fetch(`/api/user/getUser`, {
             method: 'POST',
             body: userID
         });
