@@ -78,7 +78,7 @@ export default function Setlist(): ReactElement {
   }
 
   return (
-    <div className='bg-stone-800 flex flex-col w-full lg:w-5/6 my-2 p-1 '>
+    <div className='bg-stone-800 flex flex-col justify-start w-full flex-grow xl:w-5/6 my-2 p-1 '>
       <h1 className='text-lg mx-2'>Setlist</h1>
       {allSongs.length <= 0 ? (<h1 className='m-2'>{finishedLoading ? "Add a song to your setlist." : "Loading..."}</h1>) : allSongs.map((s) => { return <SongView key={s.id} song={s} songStateSetter={setAllSongs} isActive={s.id === active} />; })}
       <button className='self-start px-2 mx-2 border-2 border-black text-stone-900 bg-white' onClick={() => setShowForm(s => !s)}>Add</button>

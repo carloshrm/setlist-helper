@@ -166,7 +166,7 @@ export default function Metronome(): ReactElement {
     }
 
     return (
-        <div className='flex flex-col w-full lg:w-2/3 p-2 lg:px-8 lg:py-4 bg-stone-800'>
+        <div className='flex flex-col w-full xl:w-1/3 p-2 lg:px-8 lg:py-4 bg-stone-800'>
             {/* bpm and time text header */}
             <h1 className='text-4xl mb-4'>Metronome</h1>
             <p><span className='font-bold'>{rate}</span> BPM</p>
