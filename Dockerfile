@@ -1,47 +1,54 @@
-FROM node:18-alpine AS base
+# syntax = docker/dockerfile:1
 
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=16.14.2
+FROM node:${NODE_VERSION}-slim as base
+
+LABEL fly_launch_runtime="Next.js/Prisma"
+
+# Next.js/Prisma app lives here
 WORKDIR /app
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-COPY prisma ./prisma/
-RUN \
-    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then npm ci; \
-    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-    else echo "Lockfile not found." && exit 1; \
-    fi
+# Set production environment
+ENV NODE_ENV="production"
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
 
-ENV NEXT_TELEMETRY_DISABLED 1
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install -y build-essential openssl pkg-config python
+
+# Install node modules
+COPY --link package-lock.json package.json ./
+RUN npm ci --include=dev
+
+# Generate Prisma Client
+COPY --link prisma .
 RUN npx prisma generate
+
+# Copy application code
+COPY --link . .
+
+# Build application
 RUN npm run build
 
-# RUN
-FROM base AS runner
+# Remove development dependencies
+RUN npm prune --omit=dev
 
-WORKDIR /app
 
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+# Final stage for app image
+FROM base
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y openssl && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-COPY --from=builder /app/public ./public
+# Copy built application
+COPY --from=build /app /app
 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 8080
-
-ENV PORT 8080
-
-CMD ["node", "server.js"]
+# Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
+CMD [ "npm", "run", "start" ]
