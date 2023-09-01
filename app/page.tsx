@@ -7,7 +7,7 @@ const quicksand = Quicksand();
 
 export default async function Home() {
   return (
-    <main className={`flex flex-col items-center h-screen bg-stone-900 ${quicksand.className}`}>
+    <main className={`flex flex-col items-center h-screen bg-[url('/bg.jpg')] bg-cover ${quicksand.className}`}>
       <Metronome />
       <Setlist />
       <Footer />
