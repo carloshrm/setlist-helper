@@ -1,6 +1,6 @@
 {
   "name": "setlist-helper",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.14",
-    "@next/font": "^13.1.6",
+    "@next/font": "^13.4.19",
     "@prisma/client": "^4.9.0",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
-    "next": "13.1.6",
+    "next": "^13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

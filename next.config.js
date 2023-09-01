@@ -6,10 +6,7 @@ const nextConfig = {
     BASE_URL: process.env.BASE_URL,
   },
   experimental: {
-    appDir: true,
-    fontLoaders: [
-      { loader: '@next/font/google', options: { subsets: ['latin'] } },
-    ],
+    appDir: true,    
   },
 };
 
